@@ -4,6 +4,7 @@
 
 // Solicitud 1: Realice una solicitud GET para obtener la lista completa de usuarios disponibles
 // en el servicio.
+
 // Definimos una función asíncrona llamada "solicitarUsuarios"
 const solicitarUsuarios = async () => {
     // 1. Realizamos la petición HTTP GET al servidor en la ruta /users
@@ -14,17 +15,18 @@ const solicitarUsuarios = async () => {
     return respuesta;
 }
 
-// 4. Ejecutamos la función "solicitarUsuarios"
-// Como devuelve una promesa, usamos .then() para manejar el resultado
-solicitarUsuarios().then((data) => {
-    // 5. Mostramos en consola la lista completa de usuarios obtenidos
-    console.log(data);
-    }
-)
+// // 4. Ejecutamos la función "solicitarUsuarios"
+// // Como devuelve una promesa, usamos .then() para manejar el resultado
+// solicitarUsuarios().then((data) => {
+//     // 5. Mostramos en consola la lista completa de usuarios obtenidos
+//     console.log(data);
+//     }
+// )
 
 // ------------------------------------------------------------------------------------------------------------------
 // Solicitud 2: Realice una solicitud GET para consultar la información de un usuario
 // específico, utilizando su identificador.
+
 // Definimos una función asíncrona llamada "solicitarUsuarioEspecifico"
 const solicitarUsuarioEspecifico = async () => {
     // 1. Realizamos la petición HTTP GET al servidor en la ruta /users/1 
@@ -37,17 +39,18 @@ const solicitarUsuarioEspecifico = async () => {
     return respuesta;
 }
 
-// 4. Ejecutamos la función "solicitarUsuarioEspecifico"
-// Como devuelve una promesa, usamos .then() para manejar el resultado
-solicitarUsuarioEspecifico().then((data) => {
-    // 5. Mostramos en consola la información del usuario con id = 1
-    console.log(data);
-    }
-)
+// // 4. Ejecutamos la función "solicitarUsuarioEspecifico"
+// // Como devuelve una promesa, usamos .then() para manejar el resultado
+// solicitarUsuarioEspecifico().then((data) => {
+//     // 5. Mostramos en consola la información del usuario con id = 1
+//     console.log(data);
+//     }
+// )
 
 // ------------------------------------------------------------------------------------------------------------------
 // Solicitud 3: Realice una solicitud GET para obtener todas las publicaciones (posts)
 // asociadas a un usuario determinado.
+
 // Definimos una función asíncrona que recibe como parámetro el id del usuario
 const solicitarPostsUsuario = async (userId) => {
     // 1. Realizamos la petición HTTP GET al servidor
@@ -61,13 +64,13 @@ const solicitarPostsUsuario = async (userId) => {
     return respuesta;
 }
 
-// 4. Ejecutamos la función "solicitarPostsUsuario" pasando el id del usuario (2)
-// Como devuelve una promesa, usamos .then() para manejar el resultado
-solicitarPostsUsuario('2').then((data) => {
-    // 5. Mostramos en consola las publicaciones asociadas al usuario con id = 2
-    console.log(data);
-    }
-)
+// // 4. Ejecutamos la función "solicitarPostsUsuario" pasando el id del usuario (2)
+// // Como devuelve una promesa, usamos .then() para manejar el resultado
+// solicitarPostsUsuario('2').then((data) => {
+//     // 5. Mostramos en consola las publicaciones asociadas al usuario con id = 2
+//     console.log(data);
+//     }
+// )
 
 // ==================================================================================================================
 // Parte 2: Solicitudes de consulta (GET)
@@ -76,9 +79,18 @@ solicitarPostsUsuario('2').then((data) => {
 // Solicitud 4: Realice una solicitud POST para crear una nueva publicación asociada a un
 // usuario existente.
 // Incluya información como título y contenido.
+
+// Definimos una función llamada "crearPublicacionUsuarioExistente"
 const crearPublicacionUsuarioExistente = () => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts
     fetch('http://localhost:3000/posts', {
+    // 2. Indicamos que el método de la solicitud es POST (crear un recurso nuevo)
     method: 'POST',
+    // 3. Enviamos el cuerpo de la solicitud en formato JSON
+    // Aquí definimos los datos de la nueva publicación:
+    // - userId: el usuario al que se asocia la publicación
+    // - title: el título de la publicación
+    // - body: el contenido de la publicación
     body: JSON.stringify(
         {
         userId: 3,
@@ -86,21 +98,36 @@ const crearPublicacionUsuarioExistente = () => {
         body: "Modelo de comunicación y cambio de información en aplicaciones web."
         }
     ),
+    // 4. Definimos los encabezados para indicar que el contenido es JSON
     headers: {
         'Content-type': 'application/json; charset=UTF-8',
     },
     })
-  .then((response) => response.json())
-  .then((json) => console.log(json));
+    // 5. Convertimos la respuesta del servidor a formato JSON
+    .then((response) => response.json())
+    // 6. Mostramos en consola el objeto que devuelve el servidor
+    // Normalmente incluye el nuevo recurso con su id asignado
+    .then((json) => console.log(json));
 }
 
+// // 7. Ejecutamos la función para crear la publicación
 // crearPublicacionUsuarioExistente()
 
+// ------------------------------------------------------------------------------------------------------------
 // Solicitud 5: Realice una solicitud POST para registrar un nuevo comentario relacionado con
 // una publicación.
+
+// Definimos una función llamada "crearNuevoComentario"
 const crearNuevoComentario = () => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /comments
     fetch('http://localhost:3000/comments', {
+    // 2. Indicamos que el método de la solicitud es POST (crear un recurso nuevo)
     method: 'POST',
+    // 3. Enviamos el cuerpo de la solicitud en formato JSON
+    // Aquí definimos los datos del nuevo comentario:
+    // - postId: el id de la publicación a la que se asocia el comentario
+    // - name: el nombre del comentario
+    // - body: el contenido del comentario
     body: JSON.stringify(
         {
         postId: 3,
@@ -108,14 +135,19 @@ const crearNuevoComentario = () => {
         body: "Buen ejemplo de arquitectura usando fetch y el metodo POST."
         }
     ),
+    // 4. Definimos los encabezados para indicar que el contenido es JSON
     headers: {
         'Content-type': 'application/json; charset=UTF-8',
     },
     })
+    // 5. Convertimos la respuesta del servidor a formato JSON
     .then((response) => response.json())
+    // 6. Mostramos en consola el objeto que devuelve el servidor
+    // Normalmente incluye el nuevo comentario con su id asignado
     .then((json) => console.log(json));
 }
 
+// // 7. Ejecutamos la función para crear el comentario
 // crearNuevoComentario()
 
 // ==================================================================================================================
