@@ -248,7 +248,7 @@ const eliminar = (id) => {
 
 // 3. Ejecutamos la función "eliminar" pasando el id de la publicación que queremos borrar.
 // En este caso, se intenta eliminar la publicación con id = 8.
-eliminar('8')
+// eliminar('8')
 
 // ==================================================================================================================
 // Parte 5: Análisis y verificación de respuestas
@@ -256,32 +256,68 @@ eliminar('8')
 
 // Solicitud 9: Repita una solicitud GET sobre el recurso eliminado o modificado y analice la
 // respuesta obtenida.
+
+// Definimos una función llamada "consultarPublicacion" que recibe como parámetro el id de la publicación
 const consultarPublicacion = (id) => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/:id
+    // Aquí indicamos el recurso específico (la publicación con el id que pasamos como argumento).
     fetch(`http://localhost:3000/posts/${id}`, {
+    // 2. Indicamos que el método de la solicitud es GET
     method: 'GET',
+    // 3. Definimos los encabezados para indicar que esperamos recibir datos en formato JSON headers: {
     headers: {
       'Accept': 'application/json'
     }
     })
+
+            // Esta parte es solo un ejemplo probando el .text y el .json
+            // response.text() -> convierte el cuerpo de la respuesta HTTP en texto plano.
+            // Es decir, en lugar de intentar interpretar la respuesta como JSON (response.json()),
+            // simplemente la devuelve como una cadena de texto.
+            // Ejemplo: si el servidor responde con "Not Found" o "Error 404", lo obtendrás tal cual como texto.
+            // .then((response) => response.text())
+
+    // 4. Convertimos la respuesta del servidor a formato JSON
+    // - Si el recurso existe, se podrá transformar correctamente.
+    // - Si el recurso fue eliminado, el servidor puede devolver un mensaje como "Not Found"
+    //   y en ese caso este paso puede lanzar un error porque no es JSON válido.
     .then((response) => response.json())
+    // 5. Mostramos en consola el objeto que devuelve el servidor
+    // - Si el recurso existe, veremos sus datos en formato objeto.
+    // - Si el recurso fue eliminado, puede que aparezca un error de parseo.
     .then((json) => console.log(json))
+    // 6. Capturamos cualquier error que ocurra durante la solicitud o el parseo de la respuesta
     .catch((error) => console.error(error));
 };
 
+// 7. Ejecutamos la función "consultarPublicacion" pasando el id de la publicación que queremos consultar. 
+// En este caso, intentamos consultar la publicación con id = 8, que ya fue eliminada.
 // consultarPublicacion(8);
 
+// -----------------------------------------------------------------------------------------------------------------
 // Solicitud 10: Realice una solicitud GET general y compare la estructura de la respuesta con
 // las solicitudes anteriores, identificando cambios y comportamientos del servicio.
+
+// Definimos una función llamada "obtenerPublicaciones"
 const obtenerPublicaciones = () => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts
+    // Aquí no especificamos un id, por lo que pedimos TODAS las publicaciones disponibles.
     fetch('http://localhost:3000/posts', {
+    // 2. Indicamos que el método de la solicitud es GET
     method: 'GET',
+    // 3. Definimos los encabezados para indicar que esperamos recibir datos en formato JSON
     headers: {
       'Accept': 'application/json'
     }
     })
+    // 4. Convertimos la respuesta del servidor a formato JSON
+    // En este caso, el servidor devolverá un ARRAY de objetos (cada objeto es una publicación).
     .then((response) => response.json())
+    // 5. Mostramos en consola el array completo de publicaciones
     .then((json) => console.log(json))
+    // 6. Capturamos cualquier error que ocurra durante la solicitud o el parseo de la respuesta
     .catch((error) => console.error(error));
 };
 
+// 7. Ejecutamos la función "obtenerPublicaciones" para realizar la solicitud
 // obtenerPublicaciones();
