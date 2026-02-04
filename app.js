@@ -234,16 +234,24 @@ const actualizarPatch = () => {
 // ==================================================================================================================
 
 // Solicitud 8: Realice una solicitud DELETE para eliminar una publicación existente.
+
+// Definimos una función llamada "eliminar" que recibe como parámetro el id de la publicación
 const eliminar = (id) => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/:id
+    // Aquí indicamos el recurso específico (la publicación con el id que pasamos como argumento).
     fetch(`http://localhost:3000/posts/${id}`, {
+    // 2. Indicamos que el método de la solicitud es DELETE
+    // DELETE se utiliza para eliminar un recurso existente en el servidor.
     method: 'DELETE',
 });
 }
 
-// eliminar('8')
+// 3. Ejecutamos la función "eliminar" pasando el id de la publicación que queremos borrar.
+// En este caso, se intenta eliminar la publicación con id = 8.
+eliminar('8')
 
 // ==================================================================================================================
-// Parte 5: Eliminación de información (DELETE)
+// Parte 5: Análisis y verificación de respuestas
 // ==================================================================================================================
 
 // Solicitud 9: Repita una solicitud GET sobre el recurso eliminado o modificado y analice la
