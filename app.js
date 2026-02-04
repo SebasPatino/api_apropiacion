@@ -156,9 +156,21 @@ const crearNuevoComentario = () => {
 
 // Solicitud 6: Realice una solicitud PUT para actualizar completamente la información de una
 // publicación existente.
+
+// Definimos una función llamada "actualizarPut"
 const actualizarPut = () => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/5
+    // Aquí indicamos el recurso específico (la publicación con id = 5)
     fetch('http://localhost:3000/posts/5', {
+    // 2. Indicamos que el método de la solicitud es PUT
+    // PUT reemplaza completamente la información del recurso existente
     method: 'PUT',
+    // 3. Enviamos el cuerpo de la solicitud en formato JSON
+    // Incluimos todos los campos de la publicación:
+    // - id: identificador de la publicación
+    // - userId: usuario asociado
+    // - title: título actualizado
+    // - body: contenido actualizado
     body: JSON.stringify(
         {
         id: "5",
@@ -167,34 +179,54 @@ const actualizarPut = () => {
         body: "Creación de recursos mediante POST (Actualizado)."
         }
     ),
+    // 4. Definimos los encabezados para indicar que el contenido es JSON
     headers: {
         'Content-type': 'application/json; charset=UTF-8',
     },
     })
+    // 5. Convertimos la respuesta del servidor a formato JSON
     .then((response) => response.json())
+    // 6. Mostramos en consola el objeto que devuelve el servidor
+    // Normalmente incluye la publicación ya actualizada
     .then((json) => console.log(json));
 }
 
+// 7. Ejecutamos la función para actualizar la publicación
 // actualizarPut()
 
+// ----------------------------------------------------------------------------------------------------------
 // Solicitud 7: Realice una solicitud PATCH para modificar únicamente un campo específico
 // de esa publicación.
+
+// Definimos una función llamada "actualizarPatch"
 const actualizarPatch = () => {
+    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/10
+    // Aquí indicamos el recurso específico (la publicación con id = 10)
     fetch('http://localhost:3000/posts/10', {
+    // 2. Indicamos que el método de la solicitud es PATCH
+    // PATCH se utiliza para modificar parcialmente un recurso,
+    // es decir, actualizar solo algunos campos sin reemplazar todo el objeto.
     method: 'PATCH',
+    // 3. Enviamos el cuerpo de la solicitud en formato JSON
+    // En este caso, solo actualizamos el campo "title" de la publicación.
     body: JSON.stringify(
         {
         title: 'Ejercicio prático',
         }
     ),
+    // 4. Definimos los encabezados para indicar que el contenido es JSON
     headers: {
         'Content-type': 'application/json; charset=UTF-8',
     },
     })
+    // 5. Convertimos la respuesta del servidor a formato JSON
     .then((response) => response.json())
+    // 6. Mostramos en consola el objeto que devuelve el servidor 
+    // Normalmente incluye la publicación con el campo actualizado.
     .then((json) => console.log(json));
 }
 
+// 7. Ejecutamos la función para aplicar la actualización parcial
 // actualizarPatch()
 
 // ==================================================================================================================
