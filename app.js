@@ -1,323 +1,149 @@
-// ==================================================================================================================
-// Parte 1: Solicitudes de consulta (GET)
-// ==================================================================================================================
+// ============================================================================
+// Archivo principal: app.js
+// ============================================================================
 
-// Solicitud 1: Realice una solicitud GET para obtener la lista completa de usuarios disponibles
-// en el servicio.
+// 1. Importamos la librería prompt-sync, que nos permite pedir datos al usuario
+//    directamente desde la consola de manera sencilla.
+import promptSync from 'prompt-sync';
 
-// Definimos una función asíncrona llamada "solicitarUsuarios"
-const solicitarUsuarios = async () => {
-    // 1. Realizamos la petición HTTP GET al servidor en la ruta /users
-    let pedido = await fetch('http://localhost:3000/users/');
-    // 2. Esperamos la respuesta y la convertimos a formato JSON
-    let respuesta = await pedido.json();
-    // 3. Retornamos la respuesta ya convertida en objeto/array de JavaScript
-    return respuesta;
-}
+// 2. Importamos nuestras funciones desde el barril (index.js).
+//    Estas funciones están modularizadas en archivos separados dentro de /services.
+import { 
+    solicitarUsuarios, 
+    solicitarUsuarioEspecifico, 
+    solicitarPostsUsuario,
+    crearPublicacionUsuarioExistente,
+    crearNuevoComentario,
+    actualizarPut,
+    actualizarPatch,
+    eliminar,
+    consultarPublicacion,
+    obtenerPublicaciones
+} from './modulos/index.js';
 
-// // 4. Ejecutamos la función "solicitarUsuarios"
-// // Como devuelve una promesa, usamos .then() para manejar el resultado
-// solicitarUsuarios().then((data) => {
-//     // 5. Mostramos en consola la lista completa de usuarios obtenidos
-//     console.log(data);
-//     }
-// )
+// 3. Inicializamos prompt-sync. El parámetro { sigint: true } permite
+//    que el usuario pueda salir con Ctrl+C sin problemas.
+const prompt = promptSync({ sigint: true });
 
-// ------------------------------------------------------------------------------------------------------------------
-// Solicitud 2: Realice una solicitud GET para consultar la información de un usuario
-// específico, utilizando su identificador.
-
-// Definimos una función asíncrona llamada "solicitarUsuarioEspecifico"
-const solicitarUsuarioEspecifico = async () => {
-    // 1. Realizamos la petición HTTP GET al servidor en la ruta /users/1 
-    // Esto significa que estamos consultando el usuario con id = 1
-    let pedido = await fetch('http://localhost:3000/users/1');
-    // 2. Esperamos la respuesta y la convertimos a formato JSON
-    // El servidor devuelve los datos del usuario en formato JSON
-    let respuesta = await pedido.json();
-    // 3. Retornamos la respuesta ya convertida en objeto de JavaScript
-    return respuesta;
-}
-
-// // 4. Ejecutamos la función "solicitarUsuarioEspecifico"
-// // Como devuelve una promesa, usamos .then() para manejar el resultado
-// solicitarUsuarioEspecifico().then((data) => {
-//     // 5. Mostramos en consola la información del usuario con id = 1
-//     console.log(data);
-//     }
-// )
-
-// ------------------------------------------------------------------------------------------------------------------
-// Solicitud 3: Realice una solicitud GET para obtener todas las publicaciones (posts)
-// asociadas a un usuario determinado.
-
-// Definimos una función asíncrona que recibe como parámetro el id del usuario
-const solicitarPostsUsuario = async (userId) => {
-    // 1. Realizamos la petición HTTP GET al servidor
-    // Usamos query params (?userId=...) para filtrar las publicaciones
-    // y obtener solo las que pertenecen al usuario indicado.
-    let pedido = await fetch(`http://localhost:3000/posts?userId=${userId}`);
-    // 2. Esperamos la respuesta y la convertimos a formato JSON
-    // El servidor devuelve un array de publicaciones asociadas a ese usuario.
-    let respuesta = await pedido.json();
-    // 3. Retornamos la respuesta ya convertida en objeto/array de JavaScript
-    return respuesta;
-}
-
-// // 4. Ejecutamos la función "solicitarPostsUsuario" pasando el id del usuario (2)
-// // Como devuelve una promesa, usamos .then() para manejar el resultado
-// solicitarPostsUsuario('2').then((data) => {
-//     // 5. Mostramos en consola las publicaciones asociadas al usuario con id = 2
-//     console.log(data);
-//     }
-// )
-
-// ==================================================================================================================
-// Parte 2: Solicitudes de consulta (GET)
-// ==================================================================================================================
-
-// Solicitud 4: Realice una solicitud POST para crear una nueva publicación asociada a un
-// usuario existente.
-// Incluya información como título y contenido.
-
-// Definimos una función llamada "crearPublicacionUsuarioExistente"
-const crearPublicacionUsuarioExistente = () => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts
-    fetch('http://localhost:3000/posts', {
-    // 2. Indicamos que el método de la solicitud es POST (crear un recurso nuevo)
-    method: 'POST',
-    // 3. Enviamos el cuerpo de la solicitud en formato JSON
-    // Aquí definimos los datos de la nueva publicación:
-    // - userId: el usuario al que se asocia la publicación
-    // - title: el título de la publicación
-    // - body: el contenido de la publicación
-    body: JSON.stringify(
-        {
-        userId: 3,
-        title: "Arquitectura empleada en el cliente-servidor",
-        body: "Modelo de comunicación y cambio de información en aplicaciones web."
-        }
-    ),
-    // 4. Definimos los encabezados para indicar que el contenido es JSON
-    headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-    },
-    })
-    // 5. Convertimos la respuesta del servidor a formato JSON
-    .then((response) => response.json())
-    // 6. Mostramos en consola el objeto que devuelve el servidor
-    // Normalmente incluye el nuevo recurso con su id asignado
-    .then((json) => console.log(json));
-}
-
-// // 7. Ejecutamos la función para crear la publicación
-// crearPublicacionUsuarioExistente()
-
-// ------------------------------------------------------------------------------------------------------------
-// Solicitud 5: Realice una solicitud POST para registrar un nuevo comentario relacionado con
-// una publicación.
-
-// Definimos una función llamada "crearNuevoComentario"
-const crearNuevoComentario = () => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /comments
-    fetch('http://localhost:3000/comments', {
-    // 2. Indicamos que el método de la solicitud es POST (crear un recurso nuevo)
-    method: 'POST',
-    // 3. Enviamos el cuerpo de la solicitud en formato JSON
-    // Aquí definimos los datos del nuevo comentario:
-    // - postId: el id de la publicación a la que se asocia el comentario
-    // - name: el nombre del comentario
-    // - body: el contenido del comentario
-    body: JSON.stringify(
-        {
-        postId: 3,
-        name: "Comentario 4",
-        body: "Buen ejemplo de arquitectura usando fetch y el metodo POST."
-        }
-    ),
-    // 4. Definimos los encabezados para indicar que el contenido es JSON
-    headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-    },
-    })
-    // 5. Convertimos la respuesta del servidor a formato JSON
-    .then((response) => response.json())
-    // 6. Mostramos en consola el objeto que devuelve el servidor
-    // Normalmente incluye el nuevo comentario con su id asignado
-    .then((json) => console.log(json));
-}
-
-// // 7. Ejecutamos la función para crear el comentario
-// crearNuevoComentario()
-
-// ==================================================================================================================
-// Parte 3: Actualización de información (PUT y PATCH)
-// ==================================================================================================================
-
-// Solicitud 6: Realice una solicitud PUT para actualizar completamente la información de una
-// publicación existente.
-
-// Definimos una función llamada "actualizarPut"
-const actualizarPut = () => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/5
-    // Aquí indicamos el recurso específico (la publicación con id = 5)
-    fetch('http://localhost:3000/posts/5', {
-    // 2. Indicamos que el método de la solicitud es PUT
-    // PUT reemplaza completamente la información del recurso existente
-    method: 'PUT',
-    // 3. Enviamos el cuerpo de la solicitud en formato JSON
-    // Incluimos todos los campos de la publicación:
-    // - id: identificador de la publicación
-    // - userId: usuario asociado
-    // - title: título actualizado
-    // - body: contenido actualizado
-    body: JSON.stringify(
-        {
-        id: "5",
-        userId: 5,
-        title: "Método POST actualizado",
-        body: "Creación de recursos mediante POST (Actualizado)."
-        }
-    ),
-    // 4. Definimos los encabezados para indicar que el contenido es JSON
-    headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-    },
-    })
-    // 5. Convertimos la respuesta del servidor a formato JSON
-    .then((response) => response.json())
-    // 6. Mostramos en consola el objeto que devuelve el servidor
-    // Normalmente incluye la publicación ya actualizada
-    .then((json) => console.log(json));
-}
-
-// 7. Ejecutamos la función para actualizar la publicación
-// actualizarPut()
-
-// ----------------------------------------------------------------------------------------------------------
-// Solicitud 7: Realice una solicitud PATCH para modificar únicamente un campo específico
-// de esa publicación.
-
-// Definimos una función llamada "actualizarPatch"
-const actualizarPatch = () => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/10
-    // Aquí indicamos el recurso específico (la publicación con id = 10)
-    fetch('http://localhost:3000/posts/10', {
-    // 2. Indicamos que el método de la solicitud es PATCH
-    // PATCH se utiliza para modificar parcialmente un recurso,
-    // es decir, actualizar solo algunos campos sin reemplazar todo el objeto.
-    method: 'PATCH',
-    // 3. Enviamos el cuerpo de la solicitud en formato JSON
-    // En este caso, solo actualizamos el campo "title" de la publicación.
-    body: JSON.stringify(
-        {
-        title: 'Ejercicio prático',
-        }
-    ),
-    // 4. Definimos los encabezados para indicar que el contenido es JSON
-    headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-    },
-    })
-    // 5. Convertimos la respuesta del servidor a formato JSON
-    .then((response) => response.json())
-    // 6. Mostramos en consola el objeto que devuelve el servidor 
-    // Normalmente incluye la publicación con el campo actualizado.
-    .then((json) => console.log(json));
-}
-
-// 7. Ejecutamos la función para aplicar la actualización parcial
-// actualizarPatch()
-
-// ==================================================================================================================
-// Parte 4: Eliminación de información (DELETE)
-// ==================================================================================================================
-
-// Solicitud 8: Realice una solicitud DELETE para eliminar una publicación existente.
-
-// Definimos una función llamada "eliminar" que recibe como parámetro el id de la publicación
-const eliminar = (id) => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/:id
-    // Aquí indicamos el recurso específico (la publicación con el id que pasamos como argumento).
-    fetch(`http://localhost:3000/posts/${id}`, {
-    // 2. Indicamos que el método de la solicitud es DELETE
-    // DELETE se utiliza para eliminar un recurso existente en el servidor.
-    method: 'DELETE',
-});
-}
-
-// 3. Ejecutamos la función "eliminar" pasando el id de la publicación que queremos borrar.
-// En este caso, se intenta eliminar la publicación con id = 8.
-// eliminar('8')
-
-// ==================================================================================================================
-// Parte 5: Análisis y verificación de respuestas
-// ==================================================================================================================
-
-// Solicitud 9: Repita una solicitud GET sobre el recurso eliminado o modificado y analice la
-// respuesta obtenida.
-
-// Definimos una función llamada "consultarPublicacion" que recibe como parámetro el id de la publicación
-const consultarPublicacion = (id) => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts/:id
-    // Aquí indicamos el recurso específico (la publicación con el id que pasamos como argumento).
-    fetch(`http://localhost:3000/posts/${id}`, {
-    // 2. Indicamos que el método de la solicitud es GET
-    method: 'GET',
-    // 3. Definimos los encabezados para indicar que esperamos recibir datos en formato JSON headers: {
-    headers: {
-      'Accept': 'application/json'
-    }
-    })
-
-            // Esta parte es solo un ejemplo probando el .text y el .json
-            // response.text() -> convierte el cuerpo de la respuesta HTTP en texto plano.
-            // Es decir, en lugar de intentar interpretar la respuesta como JSON (response.json()),
-            // simplemente la devuelve como una cadena de texto.
-            // Ejemplo: si el servidor responde con "Not Found" o "Error 404", lo obtendrás tal cual como texto.
-            // .then((response) => response.text())
-
-    // 4. Convertimos la respuesta del servidor a formato JSON
-    // - Si el recurso existe, se podrá transformar correctamente.
-    // - Si el recurso fue eliminado, el servidor puede devolver un mensaje como "Not Found"
-    //   y en ese caso este paso puede lanzar un error porque no es JSON válido.
-    .then((response) => response.json())
-    // 5. Mostramos en consola el objeto que devuelve el servidor
-    // - Si el recurso existe, veremos sus datos en formato objeto.
-    // - Si el recurso fue eliminado, puede que aparezca un error de parseo.
-    .then((json) => console.log(json))
-    // 6. Capturamos cualquier error que ocurra durante la solicitud o el parseo de la respuesta
-    .catch((error) => console.error(error));
+// 4. Creamos una función para mostrar el menú en consola.
+//    Este menú le da al usuario las opciones disponibles.
+const mostrarMenu = () => {
+    console.log("\n=== MENÚ DE SOLICITUDES ===");
+    console.log("1. Solicitud 1: Obtener lista completa de usuarios");
+    console.log("2. Solicitud 2: Obtener información de un usuario específico");
+    console.log("3. Solicitud 3: Obtener publicaciones de un usuario");
+    console.log("4. Solicitud 4: Crear una nueva publicación");
+    console.log("5. Solicitud 5: Crear un nuevo comentario");
+    console.log("6. Solicitud 6: Actualizar una publicación (PUT)");
+    console.log("7. Solicitud 7: Actualizar parcialmente una publicación (PATCH)");
+    console.log("8. Solicitud 8: Eliminar una publicación (DELETE)");
+    console.log("9. Solicitud 9: Consultar una publicación (GET tras eliminación/modificación)");
+    console.log("10. Solicitud 10: Obtener todas las publicaciones (GET general)");
+    console.log("0. Salir");
 };
 
-// 7. Ejecutamos la función "consultarPublicacion" pasando el id de la publicación que queremos consultar. 
-// En este caso, intentamos consultar la publicación con id = 8, que ya fue eliminada.
-// consultarPublicacion(8);
+// 5. Creamos la función principal que ejecutará el programa.
+//    Usamos un bucle do...while para que el menú se repita hasta que el usuario elija salir.
+const ejecutar = async () => {
+    let opcion; // variable para guardar la opción elegida
+    do {
+        // Mostramos el menú en cada ciclo
+        mostrarMenu();
 
-// -----------------------------------------------------------------------------------------------------------------
-// Solicitud 10: Realice una solicitud GET general y compare la estructura de la respuesta con
-// las solicitudes anteriores, identificando cambios y comportamientos del servicio.
+        // Pedimos al usuario que ingrese una opción
+        opcion = prompt("Seleccione una opción: ");
 
-// Definimos una función llamada "obtenerPublicaciones"
-const obtenerPublicaciones = () => {
-    // 1. Usamos fetch para hacer una solicitud HTTP al servidor en la ruta /posts
-    // Aquí no especificamos un id, por lo que pedimos TODAS las publicaciones disponibles.
-    fetch('http://localhost:3000/posts', {
-    // 2. Indicamos que el método de la solicitud es GET
-    method: 'GET',
-    // 3. Definimos los encabezados para indicar que esperamos recibir datos en formato JSON
-    headers: {
-      'Accept': 'application/json'
-    }
-    })
-    // 4. Convertimos la respuesta del servidor a formato JSON
-    // En este caso, el servidor devolverá un ARRAY de objetos (cada objeto es una publicación).
-    .then((response) => response.json())
-    // 5. Mostramos en consola el array completo de publicaciones
-    .then((json) => console.log(json))
-    // 6. Capturamos cualquier error que ocurra durante la solicitud o el parseo de la respuesta
-    .catch((error) => console.error(error));
+        // Evaluamos la opción con un switch
+        switch(opcion) {
+            case '1':
+                // Caso 1: obtener todos los usuarios
+                const usuarios = await solicitarUsuarios();
+                console.log("\nLista de usuarios:", usuarios);
+                break;
+
+            case '2':
+                // Caso 2: obtener un usuario específico
+                const usuario = await solicitarUsuarioEspecifico(1);
+                console.log(`\nUsuario con ID 1:`, usuario);
+                break;
+
+            case '3':
+                // Caso 3: obtener posts de un usuario
+                const idPosts = prompt("Ingrese el ID del usuario: ");
+                const posts = await solicitarPostsUsuario(idPosts);
+                console.log(`\nPosts del usuario con ID ${idPosts}:`, posts);
+                break;
+            
+            case '4':
+                // Caso 4: crear una nueva publicación
+                const userId = prompt("Ingrese el ID del usuario: "); 
+                const title = prompt("Ingrese el título de la publicación: "); 
+                const body = prompt("Ingrese el contenido de la publicación: "); 
+                const nuevaPublicacion = await crearPublicacionUsuarioExistente(userId, title, body); 
+                console.log("\nPublicación creada:", nuevaPublicacion); 
+                break;
+
+            case '5': 
+                // Caso 5: crear un nuevo comentario
+                const postId = prompt("Ingrese el ID de la publicación: "); 
+                const name = prompt("Ingrese el nombre del comentario: "); 
+                const bodyCom = prompt("Ingrese el contenido del comentario: "); 
+                const nuevoComentario = await crearNuevoComentario(postId, name, bodyCom); 
+                console.log("\nComentario creado:", nuevoComentario); 
+                break;
+
+            case '6': 
+                // Caso 6: actualizar una publicación completamente
+                const id = prompt("Ingrese el ID de la publicación a actualizar: "); 
+                const userIdPut = prompt("Ingrese el ID del usuario asociado: "); 
+                const titlePut = prompt("Ingrese el nuevo título: "); 
+                const bodyPut = prompt("Ingrese el nuevo contenido: "); 
+                const publicacionActualizada = await actualizarPut(id, userIdPut, titlePut, bodyPut); 
+                console.log("\nPublicación actualizada:", publicacionActualizada); 
+                break;
+
+            case '7': 
+                // Caso 7: actualizar parcialmente una publicación
+                const idPatch = prompt("Ingrese el ID de la publicación a modificar: "); 
+                const campo = prompt("Ingrese el nombre del campo a actualizar (ej: title, body): "); 
+                const valor = prompt("Ingrese el nuevo valor para ese campo: "); 
+                const publicacionParcial = await actualizarPatch(idPatch, campo, valor); 
+                console.log("\nPublicación modificada parcialmente:", publicacionParcial); 
+                break;
+
+            case '8': 
+                // Caso 8: eliminar una publicación
+                const idDelete = prompt("Ingrese el ID de la publicación a eliminar: "); 
+                const resultado = await eliminar(idDelete); 
+                console.log(`\nPublicación con ID ${idDelete} eliminada. Respuesta del servidor:`, resultado); 
+                break;
+
+            case '9':
+                // Caso 9: consultar una publicación para verificar si fue eliminada o modificada
+                const idConsulta = prompt("Ingrese el ID de la publicación a consultar: ");
+                const consulta = await consultarPublicacion(idConsulta); 
+                console.log("\nResultado de la consulta:", consulta);
+                break;
+
+            case '10':
+                // Caso 10: obtener todas las publicaciones 
+                const publicaciones = await obtenerPublicaciones(); 
+                console.log("\n📚 Todas las publicaciones:", publicaciones); 
+                break;
+
+            case '0':
+                // Caso 0: salir del programa
+                console.log("Saliendo del programa...");
+                break;
+
+            default:
+                // Si el usuario ingresa algo inválido
+                console.log("Opción inválida. Intente de nuevo.");
+        }
+
+        // El bucle se repetirá mientras la opción no sea '0'
+    } while(opcion !== '0');
 };
 
-// 7. Ejecutamos la función "obtenerPublicaciones" para realizar la solicitud
-// obtenerPublicaciones();
+// 6. Ejecutamos la función principal
+ejecutar();
